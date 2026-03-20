@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
@@ -10,6 +9,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+const [latestPost, ...earlierPosts] = posts;
 ---
 
 <!doctype html>
@@ -18,70 +18,194 @@ const posts = (await getCollection('blog')).sort(
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 		<style>
 			main {
-				width: 960px;
+				width: min(920px, calc(100% - 2rem));
+				max-width: none;
 			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
+			.archive {
+				display: grid;
+				gap: 1.8rem;
+			}
+			.heading {
+				display: grid;
+				gap: 0.7rem;
+				padding-bottom: 1.4rem;
+				border-bottom: 1px solid rgba(var(--border), 0.52);
+			}
+			.heading p {
+				margin: 0;
+			}
+			.eyebrow {
+				margin: 0;
+				font-size: 0.78rem;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				color: rgb(var(--gray));
+			}
+			.heading h1 {
+				max-width: 16ch;
+				margin: 0;
+				font-size: clamp(2.65rem, 4.2vw, 3.85rem);
+				line-height: 1.02;
+				text-wrap: balance;
+			}
+			.heading-copy {
+				max-width: 38rem;
+				color: rgb(var(--gray-dark));
+			}
+			.archive-meta {
+				font-size: 0.88rem;
+				color: rgb(var(--gray));
+			}
+			.featured {
+				display: grid;
+				gap: 0.9rem;
+				padding: 1.1rem 0 1.45rem;
+				border-bottom: 1px solid rgba(var(--border), 0.52);
+			}
+			.section-label {
+				margin: 0;
+				font-size: 0.78rem;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				color: rgb(var(--gray));
+			}
+			.featured-link {
+				display: grid;
+				grid-template-columns: 8.2rem minmax(0, 1fr);
+				gap: 1.4rem;
+				align-items: start;
+				padding: 0.3rem 0;
+				border-radius: 1rem;
+				text-decoration: none;
+				transition:
+					background-color 180ms ease,
+					padding-left 180ms ease,
+					padding-right 180ms ease;
+			}
+			.featured-link:hover,
+			.featured-link:focus-visible {
+				background: rgba(var(--surface-elevated), 0.34);
+				padding-left: 0.5rem;
+				padding-right: 0.5rem;
+			}
+			.featured-main {
+				display: grid;
+				gap: 0.55rem;
+			}
+			.featured-title {
+				margin: 0;
+				font-size: clamp(2rem, 3.2vw, 2.65rem);
+				line-height: 1.02;
+				color: rgb(var(--black));
+			}
+			.featured-description {
+				max-width: 38rem;
+				margin: 0;
+				font-size: 1.02rem;
+				color: rgb(var(--gray-dark));
+			}
+			.featured-link:hover .featured-title,
+			.featured-link:hover .meta {
+				color: rgb(var(--accent));
+			}
+			.archive-list {
+				display: grid;
+				gap: 0.8rem;
+			}
+			.archive-list-header {
+				display: grid;
+				gap: 0.25rem;
+			}
+			.list {
 				margin: 0;
 				padding: 0;
+				list-style: none;
 			}
-			ul li {
-				width: calc(50% - 1rem);
+			.entry {
+				padding: 0.4rem 0;
+				border-bottom: 1px solid rgba(var(--border), 0.52);
 			}
-			ul li * {
+			.entry:last-child {
+				border-bottom: none;
+			}
+			.entry a {
+				display: grid;
+				grid-template-columns: 8.5rem minmax(0, 1fr);
+				gap: 1.25rem;
+				align-items: start;
+				padding: 0.95rem 0;
+				border-radius: 1rem;
 				text-decoration: none;
-				transition: 0.2s ease;
+				transition:
+					background-color 180ms ease,
+					padding-left 180ms ease,
+					padding-right 180ms ease;
 			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
+			.entry a:hover,
+			.entry a:focus-visible {
+				background: rgba(var(--surface-elevated), 0.34);
+				padding-left: 0.5rem;
+				padding-right: 0.5rem;
 			}
-			ul li:first-child img {
-				width: 100%;
+			.meta {
+				display: grid;
+				gap: 0.25rem;
+				color: rgb(var(--gray));
+				font-size: 0.86rem;
+				line-height: 1.4;
 			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
+			.meta-label {
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
 			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
+			.entry-main {
+				display: grid;
+				gap: 0.4rem;
 			}
 			.title {
 				margin: 0;
 				color: rgb(var(--black));
-				line-height: 1;
+				font-size: clamp(1.55rem, 2.25vw, 2rem);
+				line-height: 1.08;
 			}
-			.date {
+			.description {
 				margin: 0;
-				color: rgb(var(--gray));
+				max-width: 38rem;
+				color: rgb(var(--gray-dark));
 			}
-			ul li a:hover h4,
-			ul li a:hover .date {
+			.entry a:hover .title,
+			.entry a:hover .meta {
 				color: rgb(var(--accent));
 			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
+			.empty {
+				padding: 1.5rem 0 0;
+				color: rgb(var(--gray));
 			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
+			@media (max-width: 860px) {
+				main {
+					width: calc(100% - 1.3rem);
 				}
-				ul li {
-					width: 100%;
-					text-align: center;
+				.featured-link,
+				.entry a {
+					grid-template-columns: 1fr;
 				}
-				ul li:first-child {
-					margin-bottom: 0;
+				.meta {
+					gap: 0.15rem;
 				}
-				ul li:first-child .title {
-					font-size: 1.563em;
+				.entry a:hover,
+				.featured-link:hover,
+				.entry a:focus-visible {
+					padding-left: 0;
+					padding-right: 0;
+					background: transparent;
+				}
+				.featured-link:focus-visible {
+					padding-left: 0;
+					padding-right: 0;
+					background: transparent;
+				}
+				.entry-main {
+					gap: 0.25rem;
 				}
 			}
 		</style>
@@ -89,24 +213,71 @@ const posts = (await getCollection('blog')).sort(
 	<body>
 		<Header />
 		<main>
-			<section>
-				<ul>
+			<section class="archive">
+				<div class="heading">
+					<p class="eyebrow">Archive</p>
+					<h1>Notes that are trying to stay useful.</h1>
+					<p class="heading-copy">
+						Writing about software, tools, and the defaults that make work clearer, quieter, and
+						easier to keep.
+					</p>
+					<p class="archive-meta">
+						{posts.length} notes so far. Latest note landed on <FormattedDate date={posts[0].data.pubDate} />.
+					</p>
+				</div>
+				{
+					latestPost && (
+						<section class="featured">
+							<p class="section-label">Latest note</p>
+							<a class="featured-link" href={`/blog/${latestPost.id}/`}>
+								<div class="meta">
+									<span class="meta-label">Note</span>
+									<FormattedDate date={latestPost.data.pubDate} />
+								</div>
+								<div class="featured-main">
+									<h2 class="featured-title">{latestPost.data.title}</h2>
+									<p class="featured-description">{latestPost.data.description}</p>
+								</div>
+							</a>
+						</section>
+					)
+				}
+				<div class="archive-list">
 					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
+						earlierPosts.length > 0 ? (
+							<div class="archive-list-header">
+								<p class="section-label">Earlier notes</p>
+							</div>
+						) : (
+							<div class="archive-list-header">
+								<p class="section-label">Archive</p>
+								<p>The archive will deepen with time.</p>
+							</div>
+						)
 					}
-				</ul>
+					{
+						earlierPosts.length > 0 ? (
+							<ul class="list">
+								{earlierPosts.map((post) => (
+									<li class="entry">
+										<a href={`/blog/${post.id}/`}>
+											<div class="meta">
+												<span class="meta-label">Note</span>
+												<FormattedDate date={post.data.pubDate} />
+											</div>
+											<div class="entry-main">
+												<h2 class="title">{post.data.title}</h2>
+												<p class="description">{post.data.description}</p>
+											</div>
+										</a>
+									</li>
+								))}
+							</ul>
+						) : (
+							<p class="empty">Only one note lives here for now. More will follow.</p>
+						)
+					}
+				</div>
 			</section>
 		</main>
 		<Footer />

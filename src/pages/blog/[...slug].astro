@@ -3,18 +3,39 @@ import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
 
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
-	return posts.map((post) => ({
+	const posts = (await getCollection('blog')).sort(
+		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+	);
+
+	return posts.map((post, index) => ({
 		params: { slug: post.id },
-		props: post,
+		props: {
+			postId: post.id,
+			newerPostId: posts[index - 1]?.id ?? null,
+			olderPostId: posts[index + 1]?.id ?? null,
+		},
 	}));
 }
-type Props = CollectionEntry<'blog'>;
 
-const post = Astro.props;
+type Props = {
+	postId: string;
+	newerPostId: string | null;
+	olderPostId: string | null;
+};
+
+const { postId, newerPostId, olderPostId } = Astro.props;
+const posts = await getCollection('blog');
+const post = posts.find((entry) => entry.id === postId);
+const newerPost = newerPostId ? posts.find((entry) => entry.id === newerPostId) ?? null : null;
+const olderPost = olderPostId ? posts.find((entry) => entry.id === olderPostId) ?? null : null;
+
+if (!post) {
+	throw new Error(`Could not find blog post entry for "${postId}".`);
+}
+
 const { Content } = await render(post);
 ---
 
-<BlogPost {...post.data}>
+<BlogPost {...post.data} newerPost={newerPost} olderPost={olderPost}>
 	<Content />
 </BlogPost>

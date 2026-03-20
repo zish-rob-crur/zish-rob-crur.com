@@ -3,6 +3,41 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const defaults = [
+	{
+		label: 'Temperament',
+		value: 'Quiet, not weak. Gentle, not pleasing. Slow to warm up, steady for the long run.',
+	},
+	{
+		label: 'Method',
+		value: 'Evidence first. Feelings acknowledged. Simple decisions preferred over noisy complexity.',
+	},
+	{
+		label: 'Environment',
+		value: 'Clean lines, white space, and a low-noise setup that makes focus easier to keep.',
+	},
+	{
+		label: 'Horizon',
+		value: 'Long-term thinking. Durable defaults. Training and recovery over short bursts of drama.',
+	},
+];
+
+const work = [
+	{
+		name: 'nucleus-apple-mcp',
+		label: 'Swift + Python',
+		description:
+			'A macOS MCP server that bridges Calendar, Reminders, Notes, and Health data for AI agents.',
+		href: 'https://github.com/zish-rob-crur/nucleus-apple-mcp',
+	},
+	{
+		name: 'dotfiles',
+		label: 'Shell',
+		description: 'Editor, terminal, and shell defaults shaped around quiet tools and repeatable workflows.',
+		href: 'https://github.com/zish-rob-crur/dotfiles',
+	},
+];
 ---
 
 <!doctype html>
@@ -10,40 +45,358 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
-	<body>
+	<body class="home-page">
 		<Header />
 		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+			<section class="hero">
+				<p class="eyebrow">Writer-first notes from {SITE_TITLE}</p>
+				<div class="hero-grid">
+					<div class="hero-title">
+						<h1>Restraint, clarity, and work that lasts.</h1>
+					</div>
+					<div class="hero-side">
+						<p class="lede">
+							I write about software, tools, and the defaults that keep life low-noise. No ornamental
+							complexity. No over-explaining. Just clear notes, selected work, and a durable archive.
+						</p>
+						<div class="hero-actions">
+							<a class="button primary" href="/blog">Open the archive</a>
+							<a class="button secondary" href="/about">Read the profile</a>
+							<a class="button secondary" href="mailto:me@zish-rob-crur.com">Email me</a>
+							<a class="button secondary" href="https://github.com/zish-rob-crur" target="_blank" rel="noreferrer"
+								>See GitHub</a
+							>
+						</div>
+						<p class="epigraph">“The sunset is beautiful; farewell, sunset.”</p>
+					</div>
+				</div>
+			</section>
+
+			<section class="grid-shell">
+				<div class="column-main">
+					<section class="panel manifesto">
+						<div class="section-heading">
+							<p class="section-label">Default settings</p>
+							<h2>Quiet, not weak. Gentle, not pleasing.</h2>
+						</div>
+						<div class="defaults">
+							{
+								defaults.map((item) => (
+									<article class="default-card">
+										<h3>{item.label}</h3>
+										<p>{item.value}</p>
+									</article>
+								))
+							}
+						</div>
+					</section>
+
+					<section class="panel work">
+						<div class="section-heading">
+							<p class="section-label">Selected work</p>
+							<h2>Small, sharp projects with a clear point of view.</h2>
+						</div>
+						<div class="projects">
+							{
+								work.map((item) => (
+									<article class="project-card">
+										<p class="project-label">{item.label}</p>
+										<h3>{item.name}</h3>
+										<p>{item.description}</p>
+										<a href={item.href} target="_blank" rel="noreferrer">View repository</a>
+									</article>
+								))
+							}
+						</div>
+					</section>
+				</div>
+
+				<aside class="column-side">
+					<section class="panel aside-card">
+						<p class="section-label">Taste</p>
+						<blockquote>
+							Clean lines. White space. Minimal effort on display. Bright, not harsh. Sharp, not
+							harmful.
+						</blockquote>
+					</section>
+					<section class="panel aside-card">
+						<p class="section-label">What I keep</p>
+						<ul class="stack-list">
+							<li>Training and recovery</li>
+							<li>A low-noise environment</li>
+							<li>Few, but good relationships</li>
+							<li>Reusable personal defaults</li>
+							<li>Long-term thinking</li>
+						</ul>
+					</section>
+					<section class="panel aside-card archive-card">
+						<p class="section-label">Archive</p>
+						<h2>The notebook stays open.</h2>
+						<p>
+							Notes, essays, and implementation details live in the blog. It is where the quieter,
+							slower thinking goes.
+						</p>
+						<div class="archive-actions">
+							<a class="button secondary" href="/blog">Read the blog</a>
+							<a class="button secondary" href="mailto:me@zish-rob-crur.com">Email</a>
+						</div>
+					</section>
+				</aside>
+			</section>
 		</main>
 		<Footer />
 	</body>
 </html>
+<style>
+	main {
+		width: min(1020px, calc(100% - 2rem));
+		max-width: none;
+		padding: 3.5rem 0 4.2rem;
+	}
+	.hero,
+	.panel {
+		animation: rise-in 640ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+	.hero {
+		position: relative;
+		padding: 0 0 2.35rem;
+	}
+	.hero-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.04fr) minmax(18rem, 0.88fr);
+		gap: 1.2rem 2rem;
+		align-items: start;
+	}
+	.hero-title,
+	.hero-side {
+		display: grid;
+	}
+	.hero-side {
+		align-content: start;
+		padding-top: 0.6rem;
+	}
+	.hero::after {
+		content: "";
+		position: absolute;
+		inset: auto 0 0;
+		height: 1px;
+		background: linear-gradient(90deg, rgba(var(--border), 0), rgba(var(--border), 0.72), rgba(var(--border), 0));
+	}
+	.eyebrow,
+	.section-label,
+	.project-label {
+		margin: 0;
+		font-size: 0.78rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: rgb(var(--gray));
+	}
+	.hero h1 {
+		max-width: none;
+		margin: 0.35rem 0 0;
+		font-size: clamp(3.2rem, 6.9vw, 5.9rem);
+		line-height: 0.96;
+		letter-spacing: -0.04em;
+	}
+	.lede {
+		max-width: 28rem;
+		margin: 0;
+		font-size: clamp(1.05rem, 1.7vw, 1.22rem);
+		line-height: 1.68;
+		color: rgb(var(--gray-dark));
+	}
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem;
+		margin-top: 1.45rem;
+	}
+	.button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.7rem 1rem;
+		border: 1px solid rgba(var(--border), 0.55);
+		border-radius: 999px;
+		text-decoration: none;
+		transition:
+			transform 180ms ease,
+			border-color 180ms ease,
+			background-color 180ms ease,
+			color 180ms ease;
+	}
+	.button:hover,
+	.button:focus-visible {
+		transform: translateY(-1px);
+	}
+	.button.primary {
+		border-color: transparent;
+		background: rgb(var(--black));
+		color: rgb(var(--surface));
+	}
+	.button.primary:hover,
+	.button.primary:focus-visible {
+		background: var(--accent);
+		color: white;
+	}
+	.button.secondary {
+		background: rgba(var(--surface-elevated), 0.46);
+		color: rgb(var(--black));
+	}
+	.button.secondary:hover,
+	.button.secondary:focus-visible {
+		border-color: rgba(var(--black), 0.1);
+		background: rgba(var(--gray-soft), 0.68);
+	}
+	.epigraph {
+		margin: 1.15rem 0 0;
+		font-style: italic;
+		color: rgb(var(--gray));
+	}
+	.grid-shell {
+		display: grid;
+		grid-template-columns: minmax(0, 1.55fr) minmax(260px, 0.84fr);
+		gap: 1rem;
+		margin-top: 1.9rem;
+		align-items: start;
+	}
+	.column-main,
+	.column-side {
+		display: grid;
+		gap: 1rem;
+	}
+	.panel {
+		padding: 1.28rem;
+		border: 1px solid rgba(var(--border), 0.55);
+		border-radius: 1.35rem;
+		background:
+			linear-gradient(180deg, rgba(var(--surface-elevated), 0.8), rgba(var(--surface-elevated), 0.56)),
+			rgba(var(--surface), 0.56);
+		box-shadow: var(--box-shadow);
+	}
+	.section-heading {
+		display: grid;
+		gap: 0.3rem;
+		margin-bottom: 1rem;
+	}
+	.section-heading h2,
+	.archive-card h2 {
+		margin: 0;
+		font-size: clamp(1.55rem, 2.35vw, 2.12rem);
+	}
+	.defaults,
+	.projects {
+		display: grid;
+		gap: 0.8rem;
+	}
+	.defaults {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.default-card,
+	.project-card {
+		padding: 0.82rem 0;
+		border-top: 1px solid rgba(var(--border), 0.72);
+	}
+	.default-card:nth-child(-n + 2) {
+		border-top: none;
+		padding-top: 0;
+	}
+	.default-card h3,
+	.project-card h3 {
+		margin: 0 0 0.45rem;
+		font-size: 1.15rem;
+	}
+	.default-card p,
+	.project-card p {
+		margin: 0;
+	}
+	.project-card {
+		display: grid;
+		gap: 0.55rem;
+	}
+	.project-card a {
+		width: fit-content;
+		font-size: 0.92rem;
+	}
+	.aside-card blockquote {
+		margin-top: 0.45rem;
+	}
+	.stack-list {
+		display: grid;
+		gap: 0.65rem;
+		margin: 0.8rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.stack-list li {
+		position: relative;
+		padding-left: 1rem;
+	}
+	.stack-list li::before {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0.72em;
+		width: 0.34rem;
+		height: 0.34rem;
+		border-radius: 999px;
+		background: var(--accent);
+		transform: translateY(-50%);
+	}
+	.archive-card {
+		position: sticky;
+		top: 6.7rem;
+	}
+	.archive-card p {
+		margin: 0.7rem 0 1rem;
+	}
+	.archive-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem;
+	}
+	@media (max-width: 780px) {
+		main {
+			width: min(100%, calc(100% - 1.8rem));
+			padding: 2.6rem 0 3.5rem;
+		}
+		.hero-grid,
+		.grid-shell,
+		.defaults {
+			grid-template-columns: 1fr;
+		}
+		.archive-card {
+			position: static;
+		}
+		.lede {
+			max-width: 34rem;
+		}
+		.hero-side {
+			padding-top: 0;
+		}
+	}
+	@media (max-width: 560px) {
+		main {
+			width: calc(100% - 1.3rem);
+			padding-top: 2.2rem;
+		}
+		.hero h1 {
+			font-size: 3rem;
+		}
+		.panel {
+			padding: 1.05rem;
+			border-radius: 1.1rem;
+		}
+		.hero-actions {
+			display: grid;
+			flex-direction: column;
+			align-items: stretch;
+		}
+		.archive-actions {
+			display: grid;
+		}
+		.button {
+			width: 100%;
+		}
+	}
+</style>
