@@ -1,0 +1,224 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+
+const title = 'Nucleus Privacy Policy';
+const description =
+	'Privacy policy for Nucleus, the local-first personal data exporter for Health data and optional S3-compatible uploads.';
+
+const sections = [
+	{
+		label: 'What Nucleus reads',
+		body: 'With your permission, Nucleus reads HealthKit data needed to build daily summaries and raw export files. Nucleus does not require an account and does not use advertising SDKs or third-party analytics.',
+	},
+	{
+		label: 'Where exports live',
+		body: 'By default, exports stay in Nucleus private app storage. Nucleus does not sync Health exports to iCloud in the shipping App Store product path.',
+	},
+	{
+		label: 'Optional uploads',
+		body: 'If you enable uploads, Nucleus sends exported files to the S3-compatible bucket and endpoint you configure. Uploaded files are then governed by your storage provider, bucket policy, and retention settings.',
+	},
+	{
+		label: 'Retention',
+		body: 'Files kept in Nucleus private storage remain there until you delete the app or remove the exported files from the app storage path. Uploaded files remain in your configured bucket until you delete them there.',
+	},
+	{
+		label: 'Access and controls',
+		body: 'You can revoke Health access at any time in the Health app or in iOS Settings. You can disable uploads or remove object-store credentials from Nucleus Settings at any time.',
+	},
+	{
+		label: 'Credentials',
+		body: 'Object-store credentials are stored in Apple Keychain on your device.',
+	},
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="hero">
+				<p class="eyebrow">Nucleus</p>
+				<div class="hero-grid">
+					<div>
+						<h1>Privacy Policy</h1>
+						<p class="lede">
+							Nucleus is built to export Health data with restraint. No account. No advertising stack.
+							No default cloud sync for Health exports.
+						</p>
+					</div>
+					<div class="hero-meta">
+						<p class="meta-label">Last updated</p>
+						<p class="meta-value">March 22, 2026</p>
+						<p class="meta-note">
+							This page is intended for App Store listing and public reference.
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<section class="summary-strip" aria-label="Policy summary">
+				<p>No account required</p>
+				<p>HealthKit access is opt-in</p>
+				<p>Uploads are optional</p>
+				<p>No iCloud Health sync</p>
+			</section>
+
+			<section class="policy-grid">
+				<div class="policy-main">
+					{
+						sections.map((section) => (
+							<article class="panel section-panel">
+								<p class="section-label">{section.label}</p>
+								<p>{section.body}</p>
+							</article>
+						))
+					}
+				</div>
+
+				<aside class="policy-side">
+					<section class="panel side-panel">
+						<p class="section-label">Contact</p>
+						<h2>Questions or support</h2>
+						<p>
+							If you have questions about Nucleus privacy practices, contact
+							<a href="mailto:me@zish-rob-crur.com">me@zish-rob-crur.com</a>.
+						</p>
+					</section>
+
+					<section class="panel side-panel">
+						<p class="section-label">Important note</p>
+						<p>
+							If you enable object-store uploads, your provider becomes part of your storage chain.
+							Review its privacy, retention, and access policies separately.
+						</p>
+					</section>
+				</aside>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		width: min(980px, calc(100% - 2rem));
+		max-width: none;
+		padding: 3.5rem 0 4.6rem;
+	}
+	.hero {
+		display: grid;
+		gap: 1.25rem;
+		padding-bottom: 1.8rem;
+	}
+	.hero-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.12fr) minmax(15rem, 0.62fr);
+		gap: 1rem 2rem;
+		align-items: end;
+	}
+	.eyebrow,
+	.section-label,
+	.meta-label {
+		margin: 0;
+		font-size: 0.78rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: rgb(var(--gray));
+	}
+	h1 {
+		margin: 0;
+		font-size: clamp(2.8rem, 6vw, 5rem);
+		line-height: 0.96;
+	}
+	.lede {
+		max-width: 40rem;
+		margin: 0.75rem 0 0;
+		font-size: 1.1rem;
+		line-height: 1.72;
+	}
+	.hero-meta {
+		padding: 1.1rem 1.2rem;
+		border: 1px solid rgba(var(--border), 0.55);
+		border-radius: 1.4rem;
+		background:
+			linear-gradient(180deg, rgba(var(--surface-elevated), 0.86), rgba(var(--surface-elevated), 0.62)),
+			rgba(var(--surface), 0.64);
+		box-shadow: var(--box-shadow);
+	}
+	.meta-value {
+		margin: 0.3rem 0 0;
+		font-family: var(--font-display);
+		font-size: 1.35rem;
+		color: rgb(var(--black));
+	}
+	.meta-note {
+		margin: 0.7rem 0 0;
+		font-size: 0.95rem;
+		line-height: 1.55;
+	}
+	.summary-strip {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem;
+		padding: 1rem 0 1.55rem;
+	}
+	.summary-strip p {
+		margin: 0;
+		padding: 0.6rem 0.9rem;
+		border: 1px solid rgba(var(--border), 0.55);
+		border-radius: 999px;
+		background: rgba(var(--surface-elevated), 0.72);
+		font-size: 0.88rem;
+		line-height: 1.2;
+		color: rgb(var(--gray-dark));
+	}
+	.policy-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.5fr);
+		gap: 1.15rem;
+	}
+	.policy-main,
+	.policy-side {
+		display: grid;
+		gap: 1rem;
+		align-content: start;
+	}
+	.panel {
+		padding: 1.4rem 1.45rem;
+		border: 1px solid rgba(var(--border), 0.55);
+		border-radius: 1.45rem;
+		background:
+			linear-gradient(180deg, rgba(var(--surface-elevated), 0.84), rgba(var(--surface-elevated), 0.58)),
+			rgba(var(--surface), 0.56);
+		box-shadow: var(--box-shadow);
+	}
+	.section-panel p:last-child,
+	.side-panel p:last-child {
+		margin-bottom: 0;
+	}
+	.side-panel h2 {
+		margin-top: 0.2rem;
+		font-size: clamp(1.5rem, 3vw, 2rem);
+	}
+	@media (max-width: 760px) {
+		main {
+			width: calc(100% - 1.3rem);
+			padding-top: 2.35rem;
+		}
+		.hero-grid,
+		.policy-grid {
+			grid-template-columns: 1fr;
+		}
+		.panel,
+		.hero-meta {
+			border-radius: 1.15rem;
+		}
+	}
+</style>
