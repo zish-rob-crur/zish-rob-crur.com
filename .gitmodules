@@ -1,3 +1,4 @@
 [submodule "external/nucleus-apple-mcp"]
 	path = external/nucleus-apple-mcp
-	url = git@github.com:zish-rob-crur/nucleus-apple-mcp.git
+	url = https://github.com/zish-rob-crur/nucleus-apple-mcp.git
+	branch = main
