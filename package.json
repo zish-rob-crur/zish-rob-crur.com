@@ -6,7 +6,10 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "sync:nucleus": "node ./scripts/sync-nucleus-content.mjs",
+    "predev": "npm run sync:nucleus",
     "dev": "astro dev",
+    "prebuild": "npm run sync:nucleus",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"

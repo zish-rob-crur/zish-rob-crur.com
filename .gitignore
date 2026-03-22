@@ -20,5 +20,9 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# generated synced content
+src/content/blog/introducing-nucleus.md
+public/nucleus/
+
 # jetbrains setting folder
 .idea/

@@ -30,6 +30,7 @@ const work = [
 		description:
 			'A macOS MCP server that bridges Calendar, Reminders, Notes, and Health data for AI agents.',
 		href: 'https://github.com/zish-rob-crur/nucleus-apple-mcp',
+		articleHref: '/blog/introducing-nucleus',
 	},
 	{
 		name: 'dotfiles',
@@ -99,15 +100,18 @@ const work = [
 						<div class="projects">
 							{
 								work.map((item) => (
-									<article class="project-card">
-										<p class="project-label">{item.label}</p>
-										<h3>{item.name}</h3>
-										<p>{item.description}</p>
+								<article class="project-card">
+									<p class="project-label">{item.label}</p>
+									<h3>{item.name}</h3>
+									<p>{item.description}</p>
+									<div class="project-links">
 										<a href={item.href} target="_blank" rel="noreferrer">View repository</a>
-									</article>
-								))
-							}
-						</div>
+										{item.articleHref && <a href={item.articleHref}>Read the launch note</a>}
+									</div>
+								</article>
+							))
+						}
+					</div>
 					</section>
 				</div>
 
@@ -313,6 +317,11 @@ const work = [
 	.project-card {
 		display: grid;
 		gap: 0.55rem;
+	}
+	.project-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem;
 	}
 	.project-card a {
 		width: fit-content;
