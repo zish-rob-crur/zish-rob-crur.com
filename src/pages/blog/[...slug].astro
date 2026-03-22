@@ -33,9 +33,9 @@ if (!post) {
 	throw new Error(`Could not find blog post entry for "${postId}".`);
 }
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
 
-<BlogPost {...post.data} newerPost={newerPost} olderPost={olderPost}>
+<BlogPost {...post.data} newerPost={newerPost} olderPost={olderPost} headings={headings}>
 	<Content />
 </BlogPost>

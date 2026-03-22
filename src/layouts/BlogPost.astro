@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import type { MarkdownHeading } from 'astro';
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
@@ -9,10 +10,22 @@ import Header from '../components/Header.astro';
 interface Props extends CollectionEntry<'blog'>['data'] {
 	newerPost?: CollectionEntry<'blog'> | null;
 	olderPost?: CollectionEntry<'blog'> | null;
+	headings?: MarkdownHeading[];
 }
 
-const { title, description, pubDate, updatedDate, heroImage, newerPost = null, olderPost = null } =
-	Astro.props;
+const {
+	title,
+	description,
+	pubDate,
+	updatedDate,
+	heroImage,
+	newerPost = null,
+	olderPost = null,
+	headings = [],
+} = Astro.props;
+
+const tableOfContents = headings.filter(({ depth }) => depth >= 2 && depth <= 4);
+const hasTableOfContents = tableOfContents.length > 0;
 ---
 
 <html lang="en">
@@ -23,9 +36,25 @@ const { title, description, pubDate, updatedDate, heroImage, newerPost = null, o
 				width: min(860px, calc(100% - 2rem));
 				max-width: none;
 			}
+			main.has-toc {
+				width: min(1180px, calc(100% - 2rem));
+			}
 			.story {
 				display: grid;
 				gap: 2rem;
+			}
+			.article-body {
+				display: grid;
+				gap: 2rem;
+			}
+			.article-body.has-toc {
+				grid-template-columns: minmax(0, 42rem) minmax(15rem, 18rem);
+				align-items: start;
+				justify-content: space-between;
+				gap: 2.4rem;
+			}
+			.article-main {
+				width: min(42rem, 100%);
 			}
 			.back-link,
 			.adjacent-card {
@@ -85,15 +114,80 @@ const { title, description, pubDate, updatedDate, heroImage, newerPost = null, o
 				padding: 0;
 				color: rgb(var(--gray-dark));
 			}
-			.prose > :first-child {
+			:global(.prose > :first-child) {
 				margin-top: 0;
 			}
-			.prose :where(h2, h3, h4) {
+			:global(.prose > h1:first-child) {
+				display: none;
+			}
+			:global(.prose h2),
+			:global(.prose h3),
+			:global(.prose h4) {
 				margin-top: 2.1rem;
 				margin-bottom: 0.7rem;
+				scroll-margin-top: 6.5rem;
 			}
-			.prose :where(ul, ol) {
+			:global(.prose ul),
+			:global(.prose ol) {
 				padding-left: 1.35rem;
+			}
+			.table-of-contents {
+				position: sticky;
+				top: 6.5rem;
+				display: grid;
+				gap: 0.9rem;
+				max-height: calc(100vh - 7.5rem);
+				overflow: auto;
+				padding: 1rem 1rem 1.15rem;
+				border: 1px solid rgba(var(--border), 0.58);
+				border-radius: 1.1rem;
+				background: rgba(var(--surface-elevated), 0.6);
+				backdrop-filter: blur(14px);
+			}
+			.toc-label {
+				margin: 0;
+				font-size: 0.78rem;
+				font-weight: 700;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: rgb(var(--gray));
+			}
+			.toc-list {
+				display: grid;
+				gap: 0.2rem;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			.toc-item {
+				margin: 0;
+				padding: 0;
+			}
+			.toc-item.depth-3 {
+				padding-left: 0.85rem;
+			}
+			.toc-item.depth-4 {
+				padding-left: 1.45rem;
+			}
+			.toc-link {
+				display: block;
+				padding: 0.42rem 0.55rem;
+				border-radius: 0.8rem;
+				color: rgb(var(--gray-dark));
+				font-size: 0.96rem;
+				line-height: 1.4;
+				text-decoration: none;
+				transition:
+					background-color 180ms ease,
+					color 180ms ease,
+					transform 180ms ease;
+			}
+			.toc-link:hover,
+			.toc-link:focus-visible,
+			.toc-link.is-active {
+				background: rgba(var(--gray-soft), 0.72);
+				color: var(--accent);
+				transform: translateX(2px);
 			}
 			.last-updated-on {
 				font-style: italic;
@@ -145,6 +239,9 @@ const { title, description, pubDate, updatedDate, heroImage, newerPost = null, o
 				main {
 					width: calc(100% - 1.3rem);
 				}
+				main.has-toc {
+					width: calc(100% - 1.3rem);
+				}
 				.adjacent-grid {
 					grid-template-columns: 1fr;
 				}
@@ -154,12 +251,28 @@ const { title, description, pubDate, updatedDate, heroImage, newerPost = null, o
 					gap: 0.3rem;
 				}
 			}
+			@media (max-width: 980px) {
+				.article-body.has-toc {
+					grid-template-columns: 1fr;
+					gap: 1.4rem;
+				}
+				.article-main {
+					width: min(42rem, 100%);
+				}
+				.table-of-contents {
+					position: static;
+					top: auto;
+					order: -1;
+					max-height: none;
+					overflow: visible;
+				}
+			}
 		</style>
 	</head>
 
 	<body>
 		<Header />
-		<main>
+		<main class:list={{ 'has-toc': hasTableOfContents }}>
 			<article class="story">
 				<a class="back-link" href="/blog">Back to archive</a>
 				<header class="article-header">
@@ -186,37 +299,109 @@ const { title, description, pubDate, updatedDate, heroImage, newerPost = null, o
 						<Image width={1200} height={675} src={heroImage} alt="" />
 					</div>
 				)}
-				<div class="prose">
-					<slot />
-				</div>
-				<section class="article-footer" aria-label="Adjacent notes">
-					<div class="adjacent-grid">
-						{
-							newerPost ? (
-								<a class="adjacent-card" href={`/blog/${newerPost.id}/`}>
-									<p class="adjacent-label">Newer note</p>
-									<h2>{newerPost.data.title}</h2>
-									<p>{newerPost.data.description}</p>
-								</a>
-							) : (
-								<div class="adjacent-empty"></div>
-							)
-						}
-						{
-							olderPost ? (
-								<a class="adjacent-card" href={`/blog/${olderPost.id}/`}>
-									<p class="adjacent-label">Older note</p>
-									<h2>{olderPost.data.title}</h2>
-									<p>{olderPost.data.description}</p>
-								</a>
-							) : (
-								<div class="adjacent-empty"></div>
-							)
-						}
+				<div class:list={['article-body', hasTableOfContents && 'has-toc']}>
+					<div class="article-main">
+						<div class="prose">
+							<slot />
+						</div>
+						<section class="article-footer" aria-label="Adjacent notes">
+							<div class="adjacent-grid">
+								{
+									newerPost ? (
+										<a class="adjacent-card" href={`/blog/${newerPost.id}/`}>
+											<p class="adjacent-label">Newer note</p>
+											<h2>{newerPost.data.title}</h2>
+											<p>{newerPost.data.description}</p>
+										</a>
+									) : (
+										<div class="adjacent-empty"></div>
+									)
+								}
+								{
+									olderPost ? (
+										<a class="adjacent-card" href={`/blog/${olderPost.id}/`}>
+											<p class="adjacent-label">Older note</p>
+											<h2>{olderPost.data.title}</h2>
+											<p>{olderPost.data.description}</p>
+										</a>
+									) : (
+										<div class="adjacent-empty"></div>
+									)
+								}
+							</div>
+						</section>
 					</div>
-				</section>
+					{
+						hasTableOfContents && (
+							<aside class="table-of-contents" aria-label="Table of contents">
+								<p class="toc-label">On this page</p>
+								<ol class="toc-list">
+									{tableOfContents.map((heading) => (
+										<li class:list={['toc-item', `depth-${heading.depth}`]}>
+											<a
+												class="toc-link"
+												data-toc-link
+												href={`#${heading.slug}`}
+											>
+												{heading.text}
+											</a>
+										</li>
+									))}
+								</ol>
+							</aside>
+						)
+					}
+				</div>
 			</article>
 		</main>
 		<Footer />
+		{
+			hasTableOfContents && (
+				<script is:inline>
+					const tocLinks = Array.from(document.querySelectorAll('[data-toc-link]'));
+					const sections = tocLinks
+						.map((link) => {
+							const id = decodeURIComponent(link.hash.slice(1));
+							return document.getElementById(id);
+						})
+						.filter(Boolean);
+
+					if (tocLinks.length > 0 && sections.length > 0) {
+						const setActiveLink = (id) => {
+							for (const link of tocLinks) {
+								link.classList.toggle('is-active', decodeURIComponent(link.hash.slice(1)) === id);
+							}
+						};
+
+						const observer = new IntersectionObserver(
+							(entries) => {
+								const visibleEntries = entries
+									.filter((entry) => entry.isIntersecting)
+									.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+								if (visibleEntries.length > 0) {
+									setActiveLink(visibleEntries[0].target.id);
+								}
+							},
+							{
+								rootMargin: '-100px 0px -55% 0px',
+								threshold: [0, 1],
+							},
+						);
+
+						for (const section of sections) {
+							observer.observe(section);
+						}
+
+						const initialHash = decodeURIComponent(window.location.hash.slice(1));
+						if (initialHash) {
+							setActiveLink(initialHash);
+						} else {
+							setActiveLink(sections[0].id);
+						}
+					}
+				</script>
+			)
+		}
 	</body>
 </html>
