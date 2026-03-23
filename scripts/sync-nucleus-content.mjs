@@ -13,8 +13,8 @@ const githubBase = 'https://github.com/zish-rob-crur/nucleus-apple-mcp';
 
 async function resolveSourceRoot() {
   const candidates = [
-    path.join(repoRoot, 'external', 'nucleus-apple-mcp'),
     path.resolve(repoRoot, '..', 'nucleus-apple-mcp'),
+    path.join(repoRoot, 'external', 'nucleus-apple-mcp'),
   ];
 
   for (const candidate of candidates) {
@@ -45,6 +45,10 @@ async function main() {
   markdown = markdown.replace(
     '[docs/specs/health.md](specs/health.md)',
     `[docs/specs/health.md](${githubBase}/blob/main/docs/specs/health.md)`,
+  );
+  markdown = markdown.replace(
+    '[docs/getting-started.md](getting-started.md)',
+    `[docs/getting-started.md](${githubBase}/blob/main/docs/getting-started.md)`,
   );
   markdown = markdown.replace(
     '[`skills/`](../skills/)',
