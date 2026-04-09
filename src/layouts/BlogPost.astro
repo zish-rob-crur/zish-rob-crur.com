@@ -43,10 +43,12 @@ const hasTableOfContents = tableOfContents.length > 0;
 			.story {
 				display: grid;
 				gap: 2rem;
+				min-width: 0;
 			}
 			.article-body {
 				display: grid;
 				gap: 2rem;
+				min-width: 0;
 			}
 			.article-body.has-toc {
 				grid-template-columns: minmax(0, 42rem) minmax(15rem, 18rem);
@@ -56,6 +58,7 @@ const hasTableOfContents = tableOfContents.length > 0;
 			}
 			.article-main {
 				width: min(42rem, 100%);
+				min-width: 0;
 			}
 			.back-link,
 			.adjacent-card {
@@ -108,6 +111,10 @@ const hasTableOfContents = tableOfContents.length > 0;
 				border-radius: 20px;
 				box-shadow: var(--box-shadow);
 			}
+			.hero-image {
+				min-width: 0;
+				overflow: clip;
+			}
 			.mobile-table-of-contents {
 				display: none;
 			}
@@ -117,6 +124,18 @@ const hasTableOfContents = tableOfContents.length > 0;
 				margin: 0;
 				padding: 0;
 				color: rgb(var(--gray-dark));
+				min-width: 0;
+			}
+			:global(.prose pre) {
+				max-width: 100%;
+				overflow-x: auto;
+				-webkit-overflow-scrolling: touch;
+			}
+			:global(.prose pre code) {
+				white-space: pre;
+			}
+			:global(.prose p img) {
+				max-width: 100%;
 			}
 			:global(.prose > :first-child) {
 				margin-top: 0;
@@ -261,9 +280,8 @@ const hasTableOfContents = tableOfContents.length > 0;
 					line-height: 1.65;
 				}
 				.hero-image img {
-					aspect-ratio: 16 / 10;
-					object-fit: cover;
-					object-position: center;
+					max-height: min(62vw, 19rem);
+					object-fit: contain;
 					border-radius: 16px;
 				}
 				.adjacent-grid {
