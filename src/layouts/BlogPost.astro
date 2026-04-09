@@ -25,6 +25,7 @@ const {
 } = Astro.props;
 
 const tableOfContents = headings.filter(({ depth }) => depth >= 2 && depth <= 4);
+const mobileTableOfContents = tableOfContents.filter(({ depth }) => depth === 2);
 const hasTableOfContents = tableOfContents.length > 0;
 ---
 
@@ -106,6 +107,9 @@ const hasTableOfContents = tableOfContents.length > 0;
 				width: 100%;
 				border-radius: 20px;
 				box-shadow: var(--box-shadow);
+			}
+			.mobile-table-of-contents {
+				display: none;
 			}
 			.prose {
 				width: min(42rem, 100%);
@@ -242,6 +246,26 @@ const hasTableOfContents = tableOfContents.length > 0;
 				main.has-toc {
 					width: calc(100% - 1.3rem);
 				}
+				.story {
+					gap: 1.5rem;
+				}
+				.article-header {
+					gap: 0.7rem;
+					padding-bottom: 1.35rem;
+				}
+				.title h1 {
+					font-size: clamp(2.35rem, 10vw, 3.5rem);
+				}
+				.deck {
+					font-size: 1rem;
+					line-height: 1.65;
+				}
+				.hero-image img {
+					aspect-ratio: 16 / 10;
+					object-fit: cover;
+					object-position: center;
+					border-radius: 16px;
+				}
 				.adjacent-grid {
 					grid-template-columns: 1fr;
 				}
@@ -259,12 +283,71 @@ const hasTableOfContents = tableOfContents.length > 0;
 				.article-main {
 					width: min(42rem, 100%);
 				}
-				.table-of-contents {
-					position: static;
-					top: auto;
-					order: -1;
-					max-height: none;
-					overflow: visible;
+				.desktop-table-of-contents {
+					display: none;
+				}
+				.mobile-table-of-contents {
+					display: block;
+					margin: 0 0 0.35rem;
+					padding: 0.95rem 1rem 1rem;
+					border: 1px solid rgba(var(--border), 0.58);
+					border-radius: 1rem;
+					background: rgba(var(--surface-elevated), 0.6);
+					backdrop-filter: blur(14px);
+				}
+				.mobile-table-of-contents summary {
+					display: flex;
+					align-items: baseline;
+					justify-content: space-between;
+					gap: 1rem;
+					cursor: pointer;
+					list-style: none;
+				}
+				.mobile-table-of-contents summary::-webkit-details-marker {
+					display: none;
+				}
+				.mobile-toc-heading {
+					display: grid;
+					gap: 0.2rem;
+				}
+				.mobile-toc-label {
+					margin: 0;
+					font-size: 0.76rem;
+					font-weight: 700;
+					letter-spacing: 0.12em;
+					text-transform: uppercase;
+					color: rgb(var(--gray));
+				}
+				.mobile-toc-hint {
+					font-size: 0.95rem;
+					color: rgb(var(--gray-dark));
+				}
+				.mobile-toc-count {
+					font-size: 0.84rem;
+					color: rgb(var(--gray));
+					white-space: nowrap;
+				}
+				.mobile-toc-list {
+					display: grid;
+					gap: 0.2rem;
+					margin: 0.8rem 0 0;
+					padding: 0;
+					list-style: none;
+				}
+				.mobile-toc-item {
+					margin: 0;
+					padding: 0;
+				}
+				.mobile-toc-link {
+					display: block;
+					padding: 0.45rem 0.1rem;
+					color: rgb(var(--gray-dark));
+					font-size: 0.96rem;
+					line-height: 1.4;
+					text-decoration: none;
+				}
+				.mobile-toc-link.is-active {
+					color: var(--accent);
 				}
 			}
 		</style>
@@ -301,6 +384,32 @@ const hasTableOfContents = tableOfContents.length > 0;
 				)}
 				<div class:list={['article-body', hasTableOfContents && 'has-toc']}>
 					<div class="article-main">
+						{
+							hasTableOfContents && mobileTableOfContents.length > 0 && (
+								<details class="mobile-table-of-contents" aria-label="Table of contents">
+									<summary>
+										<div class="mobile-toc-heading">
+											<p class="mobile-toc-label">On this page</p>
+											<span class="mobile-toc-hint">Jump to a section</span>
+										</div>
+										<span class="mobile-toc-count">{mobileTableOfContents.length} sections</span>
+									</summary>
+									<ol class="mobile-toc-list">
+										{mobileTableOfContents.map((heading) => (
+											<li class="mobile-toc-item">
+												<a
+													class="mobile-toc-link"
+													data-toc-link
+													href={`#${heading.slug}`}
+												>
+													{heading.text}
+												</a>
+											</li>
+										))}
+									</ol>
+								</details>
+							)
+						}
 						<div class="prose">
 							<slot />
 						</div>
@@ -333,7 +442,7 @@ const hasTableOfContents = tableOfContents.length > 0;
 					</div>
 					{
 						hasTableOfContents && (
-							<aside class="table-of-contents" aria-label="Table of contents">
+							<aside class="table-of-contents desktop-table-of-contents" aria-label="Table of contents">
 								<p class="toc-label">On this page</p>
 								<ol class="toc-list">
 									{tableOfContents.map((heading) => (
@@ -359,12 +468,17 @@ const hasTableOfContents = tableOfContents.length > 0;
 			hasTableOfContents && (
 				<script is:inline>
 					const tocLinks = Array.from(document.querySelectorAll('[data-toc-link]'));
-					const sections = tocLinks
-						.map((link) => {
-							const id = decodeURIComponent(link.hash.slice(1));
-							return document.getElementById(id);
-						})
-						.filter(Boolean);
+					const sections = Array.from(
+						new Map(
+							tocLinks
+								.map((link) => {
+									const id = decodeURIComponent(link.hash.slice(1));
+									return document.getElementById(id);
+								})
+								.filter(Boolean)
+								.map((section) => [section.id, section]),
+						).values(),
+					);
 
 					if (tocLinks.length > 0 && sections.length > 0) {
 						const setActiveLink = (id) => {
