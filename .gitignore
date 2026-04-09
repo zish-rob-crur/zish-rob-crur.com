@@ -22,6 +22,7 @@ pnpm-debug.log*
 
 # generated synced content
 src/content/blog/introducing-nucleus.md
+src/content/blog/_generated/
 public/nucleus/
 
 # jetbrains setting folder
