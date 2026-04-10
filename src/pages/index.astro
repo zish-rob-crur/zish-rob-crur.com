@@ -170,10 +170,12 @@ const work = [
 		grid-template-columns: minmax(0, 1.04fr) minmax(18rem, 0.88fr);
 		gap: 1.2rem 2rem;
 		align-items: start;
+		min-width: 0;
 	}
 	.hero-title,
 	.hero-side {
 		display: grid;
+		min-width: 0;
 	}
 	.hero-side {
 		align-content: start;
@@ -219,6 +221,7 @@ const work = [
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+		box-sizing: border-box;
 		padding: 0.7rem 1rem;
 		border: 1px solid rgba(var(--border), 0.55);
 		border-radius: 999px;
@@ -268,6 +271,7 @@ const work = [
 	.column-side {
 		display: grid;
 		gap: 1rem;
+		min-width: 0;
 	}
 	.panel {
 		padding: 1.28rem;
